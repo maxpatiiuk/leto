@@ -1,10 +1,8 @@
-# dgc
+# dragonlex
 
-The ultimate Drewgon compiler.
+Scanner-Generator based on Flex.
 
 Written in TypeScript.
-
-> NOTE: at present this project only includes a parser
 
 ## Prerequisites
 
@@ -24,21 +22,47 @@ make
 To see available options, run the script with `--help` argument:
 
 ```sh
-./dgc --help
+./dragonlex --help
 ```
 
 Example call:
 
 ```sh
-./dgc infile.dg -t tokens.txt 2> errors.txt
+./dragonlex --spec Drewgon.spec --executable lexer
+```
+
+OR alternative:
+
+```sh
+make run
 ```
 
 ## Testing
+
+To see available options, run the script with `--help` argument:
+
+```
+./lexer --help
+```
+
+Example call:
+
+```sh
+./lexer --input test.txt --output test.tokens
+```
+
+OR alternative:
+
+```sh
+make test
+```
+
+## Unit Tests
 
 Jest is used for unit testing.
 
 You can run it like this:
 
 ```sh
-make test
+npm test
 ```

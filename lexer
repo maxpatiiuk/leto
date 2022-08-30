@@ -1,0 +1,2 @@
+#!/bin/sh
+node --loader ts-node/esm src/index.ts   --spec Drewgon.spec   --input test.txt   --output test.tokens   "$@"

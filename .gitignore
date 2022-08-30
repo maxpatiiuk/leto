@@ -1,1 +1,3 @@
 node_modules
+./lexer
+./test.tokens

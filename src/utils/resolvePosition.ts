@@ -1,4 +1,4 @@
-import type { Position } from '../tokenize/types.js';
+import type { Position } from '../lexer/types.js';
 
 /**
  * Create a function that converts character number to line number and column

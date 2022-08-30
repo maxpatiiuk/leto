@@ -1,5 +1,11 @@
-main:
+build:
 	npm install
 
+run:
+	./dragonlex
+
 test:
-	npm test
+	./lexer
+
+clean:
+	rm ./lexer ./test.tokens

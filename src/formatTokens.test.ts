@@ -13,38 +13,73 @@ theories(formatTokens, [
     [
       [
         {
-          type: 'AND',
-          data: {},
+          spec: {
+            type: 'TokenSpec',
+            match: 'AND',
+            name: 'ABC',
+            keepLiteral: true,
+            regex: /./u,
+          },
           simplePosition: 0,
         },
       ],
       positionResolver,
     ],
-    'AND [1,1]',
+    'ABC:AND [1,1]',
   ],
   [
     [
       [
         {
-          type: 'STRINGLITERAL',
-          data: { literal: 'Test' },
-          simplePosition: 0,
+          spec: {
+            type: 'TokenSpec',
+            match: 'b',
+            name: 'd',
+            keepLiteral: false,
+            regex: /./u,
+          },
+          simplePosition: 2,
         },
         {
-          type: 'INTLITERAL',
-          data: { literal: 10 },
+          spec: {
+            type: 'TokenSpec',
+            match: '10',
+            name: 'INTLIT',
+            keepLiteral: false,
+            regex: /./u,
+          },
           simplePosition: 10,
         },
       ],
       positionResolver,
     ],
-    'STRINGLIT:Test [1,1]\nINTLIT:10 [3,2]',
+    'd [2,2]\nINTLIT [3,2]',
   ],
 ]);
 
 theories(formatName, [
-  [['AND', {}], 'AND'],
-  [['STRINGLITERAL', { literal: 'Test' }], 'STRINGLIT:Test'],
-  [['INTLITERAL', { literal: 10 }], 'INTLIT:10'],
-  [['ID', { literal: 'while1' }], 'ID:while1'],
+  [
+    [
+      {
+        type: 'TokenSpec',
+        match: 'AND',
+        name: 'ABC',
+        keepLiteral: true,
+        regex: /./u,
+      },
+    ],
+    'ABC:AND',
+  ],
+  [
+    [
+      {
+        type: 'TokenSpec',
+        match: '10',
+        name: 'INTLIT',
+        keepLiteral: false,
+        regex: /./u,
+      },
+    ],
+    'INTLIT',
+  ],
 ]);

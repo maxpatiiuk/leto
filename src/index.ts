@@ -2,36 +2,47 @@ import { program } from 'commander';
 import fs from 'node:fs';
 
 import { parse } from './parser.js';
+import { parseSpecFromFile } from './spec/index.js';
+import type { Spec } from './spec/types.js';
+import type { RA } from './utils/types.js';
 
-program.name('dgc').description('The ultimate Drewgon compiler');
-
-let input = '';
+program.name('dragonlex').description('Drag Trial #1 - Flex');
 
 program
-  .argument('<input>', 'path to input file')
-  .action((inputString: string) => {
-    input = inputString;
-  })
-  .requiredOption(
-    '-t, --tokensOutput <string>',
-    'path to output file for tokens'
-  );
+  .requiredOption('-i, --input <string>', 'path to input file')
+  .requiredOption('-o, --output <string>', 'path to output file')
+  .requiredOption('-s, --spec <string>', 'path to language spec file');
 
 program.parse();
 
-const { tokensOutput } = program.opts<{
-  readonly tokensOutput: string;
+const { input, output, spec } = program.opts<{
+  readonly input: string;
+  readonly output: string;
+  readonly spec: string;
 }>();
 
-run(input, tokensOutput).catch(console.error);
+if (!fs.existsSync(input))
+  throw new Error(`Input file does not exist: ${input}`);
+if (!fs.existsSync(spec)) throw new Error(`Input file does not exist: ${spec}`);
 
-async function run(input: string, tokensOutput: string): Promise<void> {
-  const rawText = await fs.promises
-    .readFile(input)
-    .then((data) => data.toString());
+parseSpecFromFile(spec)
+  .then(async (specs) => parseInput(input, specs))
+  .then(async (result) => printResults(output, result))
+  .catch(console.error);
 
-  const { formattedErrors, output } = parse(rawText);
+const parseInput = async (
+  input: string,
+  specs: RA<Spec>
+): Promise<ReturnType<typeof parse>> =>
+  parse(
+    specs,
+    await fs.promises.readFile(input).then((data) => data.toString())
+  );
 
+async function printResults(
+  outputPath: string,
+  { formattedErrors, output }: ReturnType<typeof parse>
+): Promise<void> {
   if (formattedErrors.length > 0) console.error(formattedErrors);
-  await fs.promises.writeFile(tokensOutput, output);
+  await fs.promises.writeFile(outputPath, output);
 }

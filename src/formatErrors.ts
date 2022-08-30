@@ -1,8 +1,8 @@
-import type { ParseError, Position } from './tokenize/types.js';
+import type { SyntaxError, Position } from './lexer/types.js';
 import type { RA } from './utils/types.js';
 
 export const formatErrors = (
-  errors: RA<ParseError>,
+  errors: RA<SyntaxError>,
   positionResolver: (simplePosition: number) => Position
 ): string =>
   errors
