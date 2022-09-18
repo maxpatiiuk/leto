@@ -1,71 +1,127 @@
 import { theories } from '../../tests/utils.js';
 import {
-  parseErrorMessage,
-  parseLine,
-  parseRegEx,
-  parseSpec,
+  formatAction,
+  parseActions,
+  parseAttributeGrammar,
+  parseGrammar,
+  parseGrammarDefinition,
+  parseGrammarLine,
+  validateGrammar,
 } from '../index.js';
 
-theories(parseSpec, [
-  [
-    [`[A-Z] (ERR) "Some error"\n.* (SKIP)`],
-    [
-      {
-        type: 'ErrorSpec',
-        regex: /^[A-Z]/u,
-        message: 'Some error',
+describe(parseAttributeGrammar, () => {
+  test('throws on extra categories', () =>
+    expect(() => parseAttributeGrammar('%%')).toThrow(
+      /Found 2 sections in the attribute grammar./u
+    ));
+  test('throws on fewer categories', () =>
+    expect(() => parseAttributeGrammar('%%\n%%\n%%')).toThrow(
+      /Found 4 sections in the attribute grammar./u
+    ));
+  test('valid grammar', () =>
+    expect(parseAttributeGrammar('s ::= #1\n%%\na\n%%\n#1 { b }')).toEqual({
+      grammar: {
+        s: [[{ type: 'ActionReference', number: 1 }]],
       },
-      {
-        type: 'SkipSpec',
-        regex: /^.*/u,
-      },
+      initialization: 'a',
+      actions: { 1: 'b' },
+    }));
+});
+
+theories(parseGrammar, [
+  {
+    in: [
+      `s ::= A
+s ::= B`,
     ],
-  ],
+    out: {
+      s: [[{ type: 'Part', name: 'A' }], [{ type: 'Part', name: 'B' }]],
+    },
+  },
 ]);
 
-theories(parseLine, [
-  [
-    ['[A-Z] (ERR) "Some error"'],
-    {
-      type: 'ErrorSpec',
-      regex: /^[A-Z]/u,
-      message: 'Some error',
-    },
-  ],
-  [
-    ['.* (SKIP)'],
-    {
-      type: 'SkipSpec',
-      regex: /^.*/u,
-    },
-  ],
-  [
-    ['\\t\\n A_TOKEN false'],
-    {
-      type: 'TokenSpec',
-      regex: /^\t\n/u,
-      name: 'A_TOKEN',
-      keepLiteral: false,
-    },
-  ],
-  [
-    ['(ERR) Other-Token true'],
-    {
-      type: 'TokenSpec',
-      regex: /^(ERR)/u,
-      name: 'Other-Token',
-      keepLiteral: true,
-    },
-  ],
+theories(parseGrammarLine, [
+  {
+    in: [`S   ::=   A #4`],
+    out: [
+      'S',
+      [
+        { type: 'Part', name: 'A' },
+        { type: 'ActionReference', number: 4 },
+      ],
+    ],
+  },
 ]);
 
-theories(parseRegEx, [
-  [[`  [A-Z] `], /^[A-Z]/u],
-  [[' \\_BA\\_ '], /^ BA /u],
-  [[`\\ \\'\\"\\_`], /^ '" /u],
+theories(formatAction, [{ in: ['3'], out: '#3' }]);
+
+theories(parseGrammarDefinition, [
+  {
+    in: ['#1'],
+    out: [{ type: 'ActionReference', number: 1 }],
+  },
+  {
+    in: ['B A #2'],
+    out: [
+      { type: 'Part', name: 'B' },
+      { type: 'Part', name: 'A' },
+      { type: 'ActionReference', number: 2 },
+    ],
+  },
 ]);
 
-theories(parseErrorMessage, [
-  [['Abc'], 'Abc'],
-  [['" Abc "'], ' Abc '],
+theories(parseActions, [
+  {
+    in: [
+      `#1 { a }
+#3 { 
+   ;{};
+   {a {} '}
+}`,
+    ],
+    out: {
+      1: 'a',
+      3: `;{};
+   {a {} '}`,
+    },
+  },
 ]);
+
+describe(validateGrammar, () => {
+  test('validates valid grammar withouth errors', () =>
+    expect(
+      validateGrammar({
+        grammar: {},
+        initialization: '',
+        actions: {},
+      })
+    ).toBeUndefined());
+
+  test('throws on invalid action references', () =>
+    expect(() =>
+      validateGrammar({
+        grammar: {
+          a: [
+            [
+              {
+                type: 'ActionReference',
+                number: 3,
+              },
+              { type: 'ActionReference', number: 2 },
+            ],
+          ],
+        },
+        initialization: '',
+        actions: { 2: '' },
+      })
+    ).toThrow(`Found a reference to unknown action #3`));
+
+  test('throws on unused action', () =>
+    expect(() =>
+      validateGrammar({
+        grammar: {},
+        initialization: '',
+        actions: { 2: '' },
+      })
+    ).toThrow('Found unused action: #2'));
+});

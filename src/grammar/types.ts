@@ -1,29 +1,29 @@
 import type { State } from 'typesafe-reducer';
 
-export type TokenSpec = State<
-  'TokenSpec',
+import type { IR, RA, RR } from '../utils/types.js';
+
+export type AttributeGrammar = {
+  readonly grammar: Grammar;
+  readonly initialization: string;
+  readonly actions: GrammarActions;
+};
+
+export type Grammar = IR<RA<GrammarLine>>;
+
+export type GrammarLine = RA<ActionReference | GrammarPart>;
+
+export type ActionReference = State<
+  'ActionReference',
   {
-    readonly regex: RegExp;
+    readonly number: number;
+  }
+>;
+
+export type GrammarPart = State<
+  'Part',
+  {
     readonly name: string;
-    readonly keepLiteral: boolean;
   }
 >;
 
-export type TokenWithMatch = TokenSpec & { readonly match: string };
-
-export type SkipSpec = State<
-  'SkipSpec',
-  {
-    readonly regex: RegExp;
-  }
->;
-
-export type ErrorSpec = State<
-  'ErrorSpec',
-  {
-    readonly regex: RegExp;
-    readonly message: string;
-  }
->;
-
-export type Spec = ErrorSpec | SkipSpec | TokenSpec;
+export type GrammarActions = RR<number, string>;

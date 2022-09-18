@@ -1,78 +1,107 @@
 import fs from 'node:fs';
 
-import type { RA } from '../utils/types.js';
-import type { Spec } from './types.js';
 import { filterArray } from '../utils/types.js';
+import { group } from '../utils/utils.js';
+import type {
+  AttributeGrammar,
+  Grammar,
+  GrammarActions,
+  GrammarLine,
+} from './types.js';
 
-export const parseGrammarFromFile = async (grammarPath: string): Promise<RA<Spec>> =>
-  parseSpec(
-    await fs.promises.readFile(grammarPath).then((data) => data.toString())
+const grammarSplitSymbol = /(?:^|\n)%%(?:\n|$)/mu;
+
+export async function parseGrammarFromFile(
+  grammarPath: string
+): Promise<AttributeGrammar> {
+  const text = await fs.promises
+    .readFile(grammarPath)
+    .then((data) => data.toString());
+  return parseAttributeGrammar(text);
+}
+
+export function parseAttributeGrammar(text: string): AttributeGrammar {
+  const parts = text.split(grammarSplitSymbol);
+  if (parts.length !== 3)
+    throw new Error(
+      `Found ${parts.length} sections in the attribute grammar. ` +
+        `Expected 3. (%% is used to separate sections)`
+    );
+  const [grammar, initialization, actions] = parts;
+  const attributeGrammar: AttributeGrammar = {
+    grammar: parseGrammar(grammar),
+    initialization,
+    actions: parseActions(actions),
+  };
+  validateGrammar(attributeGrammar);
+  return attributeGrammar;
+}
+
+export const parseGrammar = (rawGrammar: string): Grammar =>
+  Object.fromEntries(
+    group(rawGrammar.trim().split('\n').map(parseGrammarLine))
   );
 
-export function parseSpec(spec: string): RA<Spec> {
-  const lines = spec.trim().split('\n');
-  return lines.map((line) => line.trim()).map(parseLine);
+const reGrammarLine = /^(?<name>\S+)\s+::=(?<definition>.*)$/u;
+
+export function parseGrammarLine(
+  rawLine: string
+): readonly [string, GrammarLine] {
+  const groups = reGrammarLine.exec(rawLine)?.groups;
+  if (groups === undefined)
+    throw new Error(`Unable to parse grammar line: ${rawLine}`);
+  const { name, definition } = groups;
+  return [name, parseGrammarDefinition(definition)];
 }
 
-const reToken = /^(?<regex>.*) (?<name>\S+) (?<keep>true|false)$/u;
+export const formatAction = (number: number | string): string => `#${number}`;
+const reActionReference = /^#(?<number>\d+)$/u;
 
-export function parseLine(line: string): Spec {
-  const isError =
-    line.includes('(ERR)') && !line.endsWith('true') && !line.endsWith('false');
-  const isSkip = line.endsWith('(SKIP)');
-  if (isSkip) {
-    const [regex] = line.split('(SKIP)');
-    return {
-      type: 'SkipSpec',
-      regex: parseRegEx(regex),
-    };
-  } else if (isError) {
-    const [regex, message] = line.split('(ERR)');
-    return {
-      type: 'ErrorSpec',
-      regex: parseRegEx(regex),
-      message: parseErrorMessage(message.trim()),
-    };
-  } else {
-    const groups = reToken.exec(line)?.groups;
-    if (groups === undefined)
-      throw new Error(`Unable to parse spec line: ${line}`);
-    const { regex, name, keep } = groups;
-    return {
-      type: 'TokenSpec',
-      regex: parseRegEx(regex),
-      name,
-      keepLiteral: keep === 'true',
-    };
-  }
+export const parseGrammarDefinition = (rawDefinition: string): GrammarLine =>
+  rawDefinition
+    .trim()
+    .split(' ')
+    .map((part) => {
+      const actionNumber = reActionReference.exec(part)?.groups?.number;
+      return typeof actionNumber === 'string'
+        ? {
+            type: 'ActionReference',
+            number: Number.parseInt(actionNumber),
+          }
+        : {
+            type: 'Part',
+            name: part,
+          };
+    });
+
+const reAction = /^#(?<number>\d+)\s*\{(?<definition>[^\n}]+|[\S\s]+^)\}$/gmu;
+export const parseActions = (actions: string): GrammarActions =>
+  Object.fromEntries(
+    Array.from(actions.matchAll(reAction), ({ groups }) => [
+      Number.parseInt(groups!.number),
+      groups!.definition.trim(),
+    ])
+  );
+
+export function validateGrammar({ grammar, actions }: AttributeGrammar): void {
+  const referencedActions = new Set(
+    filterArray(
+      Object.values(grammar)
+        .flat(2)
+        .map((part) =>
+          part.type === 'ActionReference' ? part.number.toString() : undefined
+        )
+    )
+  );
+  Object.keys(actions).forEach((action) => {
+    if (!referencedActions.has(action))
+      throw new Error(`Found unused action: ${formatAction(action)}`);
+  });
+  Array.from(referencedActions)
+    .filter((action) => !(action in actions))
+    .forEach((action) => {
+      throw new Error(
+        `Found a reference to unknown action ${formatAction(action)}`
+      );
+    });
 }
-
-/**
- * Add `^` to the start of regex string
- * Replace `\_` with " "
- * Replace `\ ` with " "
- * Replace `\"` with `"`
- * Replace `\'` with `'`
- */
-export function parseRegEx(rawString: string): RegExp {
-  const string = rawString.trim();
-  let isEscaped = false;
-  const parsedString = filterArray(
-    Array.from(string, (character, index) => {
-      if (character === '\\') isEscaped = !isEscaped;
-      else if (isEscaped) {
-        isEscaped = false;
-        if (character === '_') return ' ';
-      }
-      if (isEscaped && ['_', ' ', '"', "'"].includes(string[index + 1]))
-        return undefined;
-      return character;
-    })
-  ).join('');
-  return new RegExp(`^${parsedString}`, 'u');
-}
-
-export const parseErrorMessage = (message: string): string =>
-  message.startsWith('"') && message.endsWith('"')
-    ? message.slice(1, -1)
-    : message;

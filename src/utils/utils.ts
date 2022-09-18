@@ -37,3 +37,23 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
       ],
       [[], []]
     ) as readonly [left: RA<LEFT_ITEM>, right: RA<RIGHT_ITEM>];
+
+/**
+ * Convert an array of [key,value] tuples to a RA<[key, RA<value>]>
+ *
+ * @remarks
+ * KEY doesn't have to be a string. It can be of any time
+ */
+export const group = <KEY, VALUE>(
+  entries: RA<readonly [key: KEY, value: VALUE]>
+): RA<readonly [key: KEY, values: RA<VALUE>]> =>
+  Array.from(
+    entries
+      // eslint-disable-next-line functional/prefer-readonly-type
+      .reduce<Map<KEY, RA<VALUE>>>(
+        (grouped, [key, value]) =>
+          grouped.set(key, [...(grouped.get(key) ?? []), value]),
+        new Map()
+      )
+      .entries()
+  );
