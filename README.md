@@ -1,8 +1,11 @@
-# dragonlex
+# dragonsdt
 
-Scanner-Generator based on Flex.
+// TODO: update documentation
+// TODO: provide "input.ag" file (Grammar)
+// TODO: provide "test.tokens" file (Test token stream)
+// TODO: reread the requirements
 
-Written in TypeScript.
+Syntax-directed translator-generator written in TypeScript.
 
 ## Prerequisites
 
@@ -22,13 +25,13 @@ make
 To see available options, run the script with `--help` argument:
 
 ```sh
-./dragonlex --help
+./dragonsdt --help
 ```
 
 Example call:
 
 ```sh
-./dragonlex --spec Drewgon.spec --executable lexer
+./dragonsdt --spec Drewgon.spec --executable lexer
 ```
 
 OR alternative:

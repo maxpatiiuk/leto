@@ -5,7 +5,7 @@
 import { program } from 'commander';
 import fs from 'node:fs';
 
-program.name('dragonlex').description('Drag Trial #1 - Flex');
+program.name('dragonsdt').description('Trial #2 - STD');
 
 program
   .option('-i, --input <string>', 'path to input file')

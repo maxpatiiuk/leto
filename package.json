@@ -1,7 +1,7 @@
 {
-  "name": "dragonlex",
+  "name": "dragonsdt",
   "version": "1.0.0",
-  "description": "The ultimate Drewgon compiler",
+  "description": "Syntax-directed translator-generator",
   "scripts": {
     "unitTest": "node --experimental-vm-modules node_modules/.bin/jest",
     "testBuild": "ts-node-esm --input test.txt --output test.tokens --spec Drewgon.spec --executable lexer",

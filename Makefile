@@ -2,7 +2,7 @@ build:
 	npm install
 
 run:
-	./dragonlex
+	./dragonsdt
 
 test:
 	./lexer

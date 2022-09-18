@@ -6,7 +6,7 @@ import { parseSpecFromFile } from './spec/index.js';
 import type { Spec } from './spec/types.js';
 import type { RA } from './utils/types.js';
 
-program.name('dragonlex').description('Drag Trial #1 - Flex');
+program.name('dragonlex').description('Trial #2 - STD');
 
 program
   .requiredOption('-i, --input <string>', 'path to input file')
