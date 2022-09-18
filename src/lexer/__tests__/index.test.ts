@@ -1,12 +1,12 @@
-import type { Spec } from '../spec/types.js';
-import { theories } from '../tests/utils.js';
-import type { RA } from '../utils/types.js';
+import type { Spec } from '../../grammar/types.js';
+import { theories } from '../../tests/utils.js';
+import type { RA } from '../../utils/types.js';
 import {
   invalidToken,
   repositionErrors,
   specToToken,
   tokenize,
-} from './index.js';
+} from '../index.js';
 
 const specs: RA<Spec> = [
   {

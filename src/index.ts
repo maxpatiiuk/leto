@@ -2,32 +2,30 @@ import { program } from 'commander';
 import fs from 'node:fs';
 
 import { parse } from './parser.js';
-import { parseSpecFromFile } from './spec/index.js';
-import type { Spec } from './spec/types.js';
+import { parseGrammarFromFile } from './grammar/index.js';
+import type { Spec } from './grammar/types.js';
 import type { RA } from './utils/types.js';
 
 program.name('dragonlex').description('Trial #2 - STD');
 
 program
-  .requiredOption('-i, --input <string>', 'path to input file')
-  .requiredOption('-o, --output <string>', 'path to output file')
-  .requiredOption('-s, --spec <string>', 'path to language spec file');
+  .requiredOption('-t, --tokens <string>', 'path to token stream file')
+  .requiredOption('-g, --grammar <string>', 'path to attribute grammar file')
 
 program.parse();
 
-const { input, output, spec } = program.opts<{
-  readonly input: string;
-  readonly output: string;
-  readonly spec: string;
+const { tokens, grammar } = program.opts<{
+  readonly tokens: string;
+  readonly grammar: string;
 }>();
 
-if (!fs.existsSync(input))
-  throw new Error(`Input file does not exist: ${input}`);
-if (!fs.existsSync(spec)) throw new Error(`Input file does not exist: ${spec}`);
+if (!fs.existsSync(tokens))
+  throw new Error(`Tokens stream file does not exist: ${tokens}`);
+if (!fs.existsSync(grammar)) throw new Error(`Attribute grammar file does not exist: ${grammar}`);
 
-parseSpecFromFile(spec)
-  .then(async (specs) => parseInput(input, specs))
-  .then(async (result) => printResults(output, result))
+parseGrammarFromFile(grammar)
+  .then(async (specs) => parseInput(tokens, specs))
+  .then(printResults)
   .catch(console.error);
 
 const parseInput = async (
@@ -39,10 +37,9 @@ const parseInput = async (
     await fs.promises.readFile(input).then((data) => data.toString())
   );
 
-async function printResults(
-  outputPath: string,
+function printResults(
   { formattedErrors, output }: ReturnType<typeof parse>
-): Promise<void> {
+): void {
   if (formattedErrors.length > 0) console.error(formattedErrors);
-  await fs.promises.writeFile(outputPath, output);
+  else console.log(output);
 }

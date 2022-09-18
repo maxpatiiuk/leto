@@ -8,9 +8,8 @@ import fs from 'node:fs';
 program.name('dragonsdt').description('Trial #2 - STD');
 
 program
-  .option('-i, --input <string>', 'path to input file')
-  .option('-o, --output <string>', 'path to output file')
-  .option('-s, --spec <string>', 'path to language spec file')
+  .requiredOption('-t, --tokens <string>', 'path to token stream file')
+  .requiredOption('-g, --grammar <string>', 'path to attribute grammar file')
   .requiredOption(
     '-e, --executable <string>',
     'name of the output executable file'
@@ -19,14 +18,12 @@ program
 program.parse();
 
 const {
-  input = '',
-  output = '',
-  spec = '',
+  tokens = '',
+  grammar = '',
   executable,
 } = program.opts<{
-  readonly input?: string;
-  readonly output?: string;
-  readonly spec?: string;
+  readonly tokens?: string;
+  readonly grammar?: string;
   readonly executable: string;
 }>();
 
@@ -35,9 +32,8 @@ fs.promises
     executable,
     `#!/bin/sh
 node --loader ts-node/esm src/index.ts \
-  ${spec.length > 0 ? `--spec ${spec}` : ''} \
-  ${input.length > 0 ? `--input ${input}` : ''} \
-  ${output.length > 0 ? `--output ${output}` : ''} \
+  ${grammar.length > 0 ? `--grammar ${grammar}` : ''} \
+  ${tokens.length > 0 ? `--input ${tokens}` : ''} \
   "$@"
 `
   )

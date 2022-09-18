@@ -1,6 +1,6 @@
 import { formatPosition } from './formatErrors.js';
 import type { Position, Token } from './lexer/types.js';
-import type { TokenWithMatch } from './spec/types.js';
+import type { TokenWithMatch } from './grammar/types.js';
 import type { RA } from './utils/types.js';
 
 export const formatTokens = (

@@ -1,10 +1,10 @@
-import { theories } from '../tests/utils.js';
+import { theories } from '../../tests/utils.js';
 import {
   parseErrorMessage,
   parseLine,
   parseRegEx,
   parseSpec,
-} from './index.js';
+} from '../index.js';
 
 theories(parseSpec, [
   [

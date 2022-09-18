@@ -1,4 +1,4 @@
-import type { TokenWithMatch } from '../spec/types.js';
+import type { TokenWithMatch } from '../grammar/types.js';
 import type { RA } from '../utils/types.js';
 
 export type Token = {

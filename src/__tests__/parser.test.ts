@@ -1,7 +1,7 @@
-import { parse } from './parser.js';
-import type { Spec } from './spec/types.js';
-import { theories } from './tests/utils.js';
-import type { RA } from './utils/types.js';
+import { parse } from '../parser.js';
+import type { Spec } from '../grammar/types.js';
+import { theories } from '../tests/utils.js';
+import type { RA } from '../utils/types.js';
 
 const specs: RA<Spec> = [
   {

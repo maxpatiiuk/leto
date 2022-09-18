@@ -1,6 +1,6 @@
-import { formatErrors, formatPosition } from './formatErrors.js';
-import { theories } from './tests/utils.js';
-import { cretePositionResolver } from './utils/resolvePosition.js';
+import { formatErrors, formatPosition } from '../formatErrors.js';
+import { theories } from '../tests/utils.js';
+import { cretePositionResolver } from '../utils/resolvePosition.js';
 
 const positionResolver = cretePositionResolver(`
 Example

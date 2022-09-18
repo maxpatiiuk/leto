@@ -1,6 +1,6 @@
-import { formatName, formatTokens } from './formatTokens.js';
-import { theories } from './tests/utils.js';
-import { cretePositionResolver } from './utils/resolvePosition.js';
+import { formatName, formatTokens } from '../formatTokens.js';
+import { theories } from '../tests/utils.js';
+import { cretePositionResolver } from '../utils/resolvePosition.js';
 
 const positionResolver = cretePositionResolver(`
 Example

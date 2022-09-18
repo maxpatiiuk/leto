@@ -1,4 +1,4 @@
-import type { ErrorSpec, Spec } from '../spec/types.js';
+import type { ErrorSpec, Spec } from '../grammar/types.js';
 import type { RA } from '../utils/types.js';
 import { filterArray } from '../utils/types.js';
 import type { MatcherResult, SyntaxError, Token } from './types.js';

@@ -1,2 +1,2 @@
 #!/bin/sh
-node --loader ts-node/esm src/generateLexer.ts --spec Drewgon.spec --executable lexer --input test.txt --output test.tokens "$@"
+node --loader ts-node/esm src/generateStd.ts --grammar input.ag --executable translator --tokens test.tokens "$@"

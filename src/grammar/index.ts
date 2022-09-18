@@ -4,9 +4,9 @@ import type { RA } from '../utils/types.js';
 import type { Spec } from './types.js';
 import { filterArray } from '../utils/types.js';
 
-export const parseSpecFromFile = async (specPath: string): Promise<RA<Spec>> =>
+export const parseGrammarFromFile = async (grammarPath: string): Promise<RA<Spec>> =>
   parseSpec(
-    await fs.promises.readFile(specPath).then((data) => data.toString())
+    await fs.promises.readFile(grammarPath).then((data) => data.toString())
   );
 
 export function parseSpec(spec: string): RA<Spec> {
