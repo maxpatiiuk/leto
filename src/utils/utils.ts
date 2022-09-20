@@ -57,3 +57,7 @@ export const group = <KEY, VALUE>(
       )
       .entries()
   );
+
+/** Escape all characters that have special meaning in regular expressions */
+export const escapeRegExp = (string: string): string =>
+  string.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&');

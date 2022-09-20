@@ -1,5 +1,5 @@
 import { theories } from '../../tests/utils.js';
-import { group, mappedFind, split } from '../utils.js';
+import { escapeRegExp, group, mappedFind, split } from '../utils.js';
 
 describe('mappedFind', () => {
   test('Found value', () => {
@@ -42,5 +42,12 @@ theories(group, [
       ['b', [3]],
       ['c', [4]],
     ],
+  },
+]);
+
+theories(escapeRegExp, [
+  {
+    in: ['/^[a]{1,4}.a?b+$/'],
+    out: '/\\^\\[a\\]\\{1,4\\}\\.a\\?b\\+\\$/',
   },
 ]);

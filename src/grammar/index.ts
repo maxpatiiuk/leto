@@ -8,6 +8,7 @@ import type {
   GrammarActions,
   GrammarLine,
 } from './types.js';
+import { postProcessGrammar } from '../processGrammar/index.js';
 
 const grammarSplitSymbol = /(?:^|\n)%%(?:\n|$)/mu;
 
@@ -17,7 +18,7 @@ export async function parseGrammarFromFile(
   const text = await fs.promises
     .readFile(grammarPath)
     .then((data) => data.toString());
-  return parseAttributeGrammar(text);
+  return postProcessGrammar(parseAttributeGrammar(text));
 }
 
 export function parseAttributeGrammar(text: string): AttributeGrammar {
