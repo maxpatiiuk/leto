@@ -2,7 +2,8 @@ import { getFirstSets } from '../../firstFollowSets/firstSets.js';
 import { getFollowSets } from '../../firstFollowSets/followSets.js';
 import type { Grammar } from '../../grammar/types.js';
 import { wrapLine } from '../../processGrammar/leftFactor.js';
-import { buildParseTable, exportsForTests } from '../build.js';
+import { theories } from '../../tests/utils.js';
+import { buildParseTable, exportsForTests, splitGrammar } from '../build.js';
 
 const { resolveAmbiguity } = exportsForTests;
 
@@ -29,6 +30,17 @@ test('can build a parse table', () => {
     },
   });
 });
+
+theories(splitGrammar, [
+  {
+    in: [{}],
+    out: { terminals: [], nonTerminals: [] },
+  },
+  {
+    in: [{ a: [['a', 'b']], b: [['c']] }],
+    out: { terminals: ['c'], nonTerminals: ['a', 'b'] },
+  },
+]);
 
 describe('resolveAmbiguity', () => {
   test('throws on non LL(1) grammar', () =>

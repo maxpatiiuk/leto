@@ -1,26 +1,20 @@
+import type { PureGrammar } from '../firstFollowSets/firstSets.js';
 import { lineToString, toPureGrammar } from '../firstFollowSets/firstSets.js';
 import type { Grammar } from '../grammar/types.js';
 import type { IR, RA, WritableArray } from '../utils/types.js';
 import { split } from '../utils/utils.js';
 
+export type ParseTable = IR<IR<number | undefined>>;
+
 export function buildParseTable(
   grammar: Grammar,
   firstSets: IR<ReadonlySet<string>>,
   followSets: IR<ReadonlySet<string>>
-): IR<IR<number | undefined>> {
+): ParseTable {
   const pureGrammar = toPureGrammar(grammar);
 
-  const [terminals, nonTerminals] = split(
-    Array.from(
-      new Set([
-        ...Object.keys(grammar)[0],
-        ...Object.values(pureGrammar).flatMap((lines) =>
-          lines.flatMap((line) => line.map(({ name }) => name))
-        ),
-      ])
-    ),
-    (key) => key in grammar
-  );
+  const { terminals, nonTerminals } = splitGrammar(pureGrammar);
+
   const table = Object.fromEntries(
     nonTerminals.map((nonTerminal) => [
       nonTerminal,
@@ -43,6 +37,22 @@ export function buildParseTable(
   );
 
   return resolveAmbiguity(table);
+}
+
+export function splitGrammar(pureGrammar: PureGrammar): {
+  readonly terminals: RA<string>;
+  readonly nonTerminals: RA<string>;
+} {
+  const [terminals, nonTerminals] = split(
+    Array.from(
+      new Set([
+        ...Object.keys(pureGrammar)[0],
+        ...Object.values(pureGrammar).flat(3),
+      ])
+    ),
+    (key) => key in pureGrammar
+  );
+  return { terminals, nonTerminals };
 }
 
 /**

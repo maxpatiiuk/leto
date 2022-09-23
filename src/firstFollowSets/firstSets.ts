@@ -1,5 +1,4 @@
 import type { Grammar } from '../grammar/types.js';
-import { wrapPart } from '../processGrammar/leftFactor.js';
 import type { IR, RA } from '../utils/types.js';
 import { filterArray } from '../utils/types.js';
 
@@ -12,7 +11,7 @@ export function getFirstSets(grammar: Grammar): IR<ReadonlySet<string>> {
     new Set(
       [
         [],
-        ...Object.keys(grammar).map((item) => [wrapPart(item)]),
+        ...Object.keys(withoutActions).map((item) => [item]),
         ...Object.values(withoutActions).flat().flatMap(findAllSubsets),
       ].map(lineToString)
     )
