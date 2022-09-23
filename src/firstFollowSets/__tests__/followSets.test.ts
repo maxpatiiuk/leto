@@ -1,4 +1,3 @@
-import { wrapLine } from '../../processGrammar/leftFactor.js';
 import { theories } from '../../tests/utils.js';
 import {
   exportsForTests,
@@ -8,41 +7,39 @@ import {
 
 const { findTerminalEndings } = exportsForTests;
 
-describe('a', () => {
-  theories(getFollowSets, [
-    {
-      in: [
-        {
-          s: wrapLine([['a'], ['b', 'r']]),
-          q: [],
-          r: wrapLine([
-            ['q', 'c'],
-            ['q', 's'],
-            ['q', 'q'],
-          ]),
-        },
-        {
-          '["s"]': new Set<string>(['a', 'b']),
-          '["q"]': new Set<string>(['']),
-          '["r"]': new Set<string>(['c', 'a', 'b', '']),
-          '["a"]': new Set(['a']),
-          '["b"]': new Set(['b']),
-          '["c"]': new Set(['c']),
-          '["b","r"]': new Set(['b']),
-          '["q","c"]': new Set<string>(['c']),
-          '["q","s"]': new Set<string>(['a', 'b']),
-          '["q","q"]': new Set<string>(['']),
-          '[]': new Set(['']),
-        },
-      ],
-      out: {
-        s: new Set(['']),
-        q: new Set(['c', 'a', 'b', '']),
-        r: new Set(['']),
+theories(getFollowSets, [
+  {
+    in: [
+      {
+        s: [['a'], ['b', 'r']],
+        q: [],
+        r: [
+          ['q', 'c'],
+          ['q', 's'],
+          ['q', 'q'],
+        ],
       },
+      {
+        '["s"]': new Set<string>(['a', 'b']),
+        '["q"]': new Set<string>(['']),
+        '["r"]': new Set<string>(['c', 'a', 'b', '']),
+        '["a"]': new Set(['a']),
+        '["b"]': new Set(['b']),
+        '["c"]': new Set(['c']),
+        '["b","r"]': new Set(['b']),
+        '["q","c"]': new Set<string>(['c']),
+        '["q","s"]': new Set<string>(['a', 'b']),
+        '["q","q"]': new Set<string>(['']),
+        '[]': new Set(['']),
+      },
+    ],
+    out: {
+      s: new Set(['']),
+      q: new Set(['c', 'a', 'b', '']),
+      r: new Set(['']),
     },
-  ]);
-});
+  },
+]);
 
 theories(findTerminalEndings, [
   {

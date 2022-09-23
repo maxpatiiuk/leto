@@ -1,16 +1,14 @@
-import { getFirstSets } from '../../firstFollowSets/firstSets.js';
+import { getFirstSets, PureGrammar } from '../../firstFollowSets/firstSets.js';
 import { getFollowSets } from '../../firstFollowSets/followSets.js';
-import type { Grammar } from '../../grammar/types.js';
-import { wrapLine } from '../../processGrammar/leftFactor.js';
 import { theories } from '../../tests/utils.js';
 import { buildParseTable, exportsForTests, splitGrammar } from '../build.js';
 
 const { resolveAmbiguity } = exportsForTests;
 
 test('can build a parse table', () => {
-  const grammar: Grammar = {
-    s: wrapLine([['lpar', 'x', 'rpar']]),
-    x: wrapLine([['id', 'comma', 'x'], []]),
+  const grammar: PureGrammar = {
+    s: [['lpar', 'x', 'rpar']],
+    x: [['id', 'comma', 'x'], []],
   };
   const firstSets = getFirstSets(grammar);
   expect(
@@ -45,7 +43,7 @@ theories(splitGrammar, [
 describe('resolveAmbiguity', () => {
   test('throws on non LL(1) grammar', () =>
     expect(() => resolveAmbiguity({ a: { b: [1, 2] } })).toThrow(
-      /Bad grammar/u
+      /Grammar is not LL\(0\)/u
     ));
   test('flattens valid table', () =>
     expect(resolveAmbiguity({ a: { b: [1], c: [] } })).toEqual({

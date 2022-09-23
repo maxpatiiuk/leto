@@ -5,20 +5,19 @@ import { filterArray } from '../utils/types.js';
 /**
  * Computer first sets for all non-terminals and sequences of terminals
  */
-export function getFirstSets(grammar: Grammar): IR<ReadonlySet<string>> {
-  const withoutActions = toPureGrammar(grammar);
+export function getFirstSets(grammar: PureGrammar): IR<ReadonlySet<string>> {
   const allKeys = Array.from(
     new Set(
       [
         [],
-        ...Object.keys(withoutActions).map((item) => [item]),
-        ...Object.values(withoutActions).flat().flatMap(findAllSubsets),
+        ...Object.keys(grammar).map((item) => [item]),
+        ...Object.values(grammar).flat().flatMap(findAllSubsets),
       ].map(lineToString)
     )
   );
 
   return saturate(
-    saturateFirstSets.bind(undefined, withoutActions),
+    saturateFirstSets.bind(undefined, grammar),
     Object.fromEntries(allKeys.map((key) => [key, new Set()]))
   );
 }

@@ -1,18 +1,17 @@
-import type { Grammar } from '../grammar/types.js';
 import type { IR, RA } from '../utils/types.js';
 import { filterArray } from '../utils/types.js';
 import type { PureGrammar } from './firstSets.js';
-import { lineToString, saturate, toPureGrammar } from './firstSets.js';
+import { lineToString, saturate } from './firstSets.js';
 
 /**
  * Compute follow sets for all non-terminals
  */
 export const getFollowSets = (
-  grammar: Grammar,
+  grammar: PureGrammar,
   firstSets: IR<ReadonlySet<string>>
 ): IR<ReadonlySet<string>> =>
   saturate(
-    saturateFollowSets.bind(undefined, toPureGrammar(grammar), firstSets),
+    saturateFollowSets.bind(undefined, grammar, firstSets),
     Object.fromEntries(Object.keys(grammar).map((key) => [key, new Set()]))
   );
 
@@ -34,12 +33,12 @@ const saturateFollowSets = (
       findTerminalEndings(grammar, key).forEach(({ terminalName, ending }) => {
         const rawFirstSet = Array.from(firstSets[lineToString(ending)] ?? []);
         const firstSet = rawFirstSet.filter((part) => part !== '');
-        Array.from(
-          firstSet.length === 0 || rawFirstSet.includes('')
-            ? followSets[terminalName]
-            : firstSet,
-          (item) => followSet.add(item)
-        );
+        [
+          ...(firstSet.length === 0 || rawFirstSet.includes('')
+            ? Array.from(followSets[terminalName])
+            : []),
+          ...firstSet,
+        ].map((item) => followSet.add(item));
       });
 
       return [key, followSet];

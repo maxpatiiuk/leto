@@ -15,13 +15,13 @@ describe('a', () => {
     {
       in: [
         {
-          s: wrapLine([['a'], ['b', 'r']]),
-          q: [[{ type: 'ActionReference', number: 4 }]],
-          r: wrapLine([
+          s: [['a'], ['b', 'r']],
+          q: [[]],
+          r: [
             ['q', 'c'],
             ['q', 's'],
             ['q', 'q'],
-          ]),
+          ],
         },
       ],
       out: {
@@ -40,11 +40,12 @@ describe('a', () => {
     },
     {
       name: 'non-terminal with epsilon results in next first set being appended',
-      in: [{ a: wrapLine([['b', 'c']]), b: wrapLine([['d'], []]) }],
+      in: [{ a: [['b', 'c']], b: [['d'], []] }],
       out: {
         '["a"]': new Set(['d', 'c']),
         '["b","c"]': new Set(['d', 'c']),
         '["b"]': new Set(['d', '']),
+        '["c"]': new Set(['c']),
         '["d"]': new Set(['d']),
         '[]': new Set(['']),
       },
@@ -53,9 +54,9 @@ describe('a', () => {
       name: 'if all parts have epsilons, result has epsilon too',
       in: [
         {
-          a: wrapLine([['b', 'c']]),
-          b: wrapLine([['d'], []]),
-          c: wrapLine([['e'], []]),
+          a: [['b', 'c']],
+          b: [['d'], []],
+          c: [['e'], []],
         },
       ],
       out: {
