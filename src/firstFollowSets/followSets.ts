@@ -1,7 +1,7 @@
 import type { Grammar } from '../grammar/types.js';
 import type { IR, RA } from '../utils/types.js';
 import { filterArray } from '../utils/types.js';
-import type { PureGrammar, PureGrammarLine } from './firstSets.js';
+import type { PureGrammar } from './firstSets.js';
 import { lineToString, saturate, toPureGrammar } from './firstSets.js';
 
 /**
@@ -52,13 +52,10 @@ const saturateFollowSets = (
 const findTerminalEndings = (
   grammar: PureGrammar,
   key: string
-): RA<{ readonly terminalName: string; readonly ending: PureGrammarLine }> =>
+): RA<{ readonly terminalName: string; readonly ending: RA<string> }> =>
   Object.entries(grammar).flatMap(([terminalName, lines]) =>
     lines.flatMap((line) =>
-      findAllIndexesOf(
-        line.map(({ name }) => name),
-        key
-      )
+      findAllIndexesOf(line, key)
         .map((index) => line.slice(index + 1))
         .map((ending) => ({ terminalName, ending }))
     )

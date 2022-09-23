@@ -1,4 +1,4 @@
-import type { Grammar, GrammarPart } from '../grammar/types.js';
+import type { Grammar } from '../grammar/types.js';
 import { wrapPart } from '../processGrammar/leftFactor.js';
 import type { IR, RA } from '../utils/types.js';
 import { filterArray } from '../utils/types.js';
@@ -31,8 +31,7 @@ export const findAllSubsets = <T>(array: RA<T>): RA<RA<T>> =>
       .map((_, length) => array.slice(index, index + length + 1))
   );
 
-export type PureGrammar = IR<RA<PureGrammarLine>>;
-export type PureGrammarLine = RA<GrammarPart>;
+export type PureGrammar = IR<RA<RA<string>>>;
 /**
  * Remove actions from the grammar. Leave only terminals and non-terminals
  */
@@ -40,14 +39,16 @@ export const toPureGrammar = (grammar: Grammar): PureGrammar =>
   Object.fromEntries(
     Object.entries(grammar).map(([name, lines]) => [
       name,
-      lines.map(
-        (line) => line.filter((part) => part.type === 'Part') as PureGrammarLine
+      lines.map((line) =>
+        filterArray(
+          line.map((part) => (part.type === 'Part' ? part.name : undefined))
+        )
       ),
     ])
   );
 
-export const lineToString = (line: PureGrammarLine): string =>
-  JSON.stringify(filterArray(line.map(({ name }) => name)));
+export const lineToString = (line: RA<string>): string =>
+  JSON.stringify(filterArray(line));
 
 /**
  * Call a hash-set producing function until the result does not change

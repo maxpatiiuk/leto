@@ -92,7 +92,7 @@ theories(toPureGrammar, [
     ],
     out: {
       a: [[]],
-      b: wrapLine([['b']]),
+      b: [['b']],
     },
   },
 ]);
@@ -103,13 +103,8 @@ theories(lineToString, [
     out: '[]',
   },
   {
-    in: [wrapLine([['a', 'b']])[0]],
+    in: [['a', 'b']],
     out: '["a","b"]',
-  },
-  {
-    name: 'action References are ignored',
-    in: [[{ type: 'ActionReference', number: 1 }]],
-    out: '[]',
   },
 ]);
 
@@ -139,12 +134,12 @@ theories(getSetsLength, [
 
 theories(buildSet, [
   {
-    in: [{ a: wrapLine([['b']]) }, {}, 'b'],
+    in: [{ a: [['b']] }, {}, 'b'],
     out: new Set(['b']),
   },
   {
     in: [
-      { a: wrapLine([['b'], ['c', 'd']]) },
+      { a: [['b'], ['c', 'd']] },
       {
         '["b"]': new Set(['b']),
         '["c","d"]': new Set(['d', 'e']),

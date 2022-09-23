@@ -1,4 +1,4 @@
-import { wrapLine, wrapPart } from '../../processGrammar/leftFactor.js';
+import { wrapLine } from '../../processGrammar/leftFactor.js';
 import { theories } from '../../tests/utils.js';
 import {
   exportsForTests,
@@ -48,14 +48,14 @@ theories(findTerminalEndings, [
   {
     in: [
       {
-        a: wrapLine([['b', 'a', 'c', 'a', 'd']]),
-        b: wrapLine([['a'], []]),
+        a: [['b', 'a', 'c', 'a', 'd']],
+        b: [['a'], []],
       },
       'a',
     ],
     out: [
-      { terminalName: 'a', ending: wrapLine([['c', 'a', 'd']])[0] },
-      { terminalName: 'a', ending: [wrapPart('d')] },
+      { terminalName: 'a', ending: ['c', 'a', 'd'] },
+      { terminalName: 'a', ending: ['d'] },
       { terminalName: 'b', ending: [] },
     ],
   },
