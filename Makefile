@@ -2,10 +2,11 @@ build:
 	npm install
 
 run:
-	./dragonsdt
+	./dragonstd
 
 test:
-	./lexer
+	./translator --tokens test.tokens --executable executable.js
+	node ./executable.js
 
 clean:
 	rm ./lexer ./test.tokens

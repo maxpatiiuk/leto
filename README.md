@@ -1,10 +1,5 @@
 # dragonsdt
 
-// TODO: update documentation
-// TODO: provide "input.ag" file (Grammar)
-// TODO: provide "test.tokens" file (Test token stream)
-// TODO: reread the requirements
-
 Syntax-directed translator-generator written in TypeScript.
 
 ## Prerequisites
@@ -17,7 +12,7 @@ Syntax-directed translator-generator written in TypeScript.
 Install dependencies: 
 
 ```sh
-make
+make build
 ```
 
 ## Running
@@ -31,7 +26,7 @@ To see available options, run the script with `--help` argument:
 Example call:
 
 ```sh
-./dragonsdt --spec Drewgon.spec --executable lexer
+./dragonsdt --grammar input.ag --executable translator
 ```
 
 OR alternative:
@@ -45,13 +40,14 @@ make run
 To see available options, run the script with `--help` argument:
 
 ```
-./lexer --help
+./translator --help
 ```
 
 Example call:
 
 ```sh
-./lexer --input test.txt --output test.tokens
+./translator --tokens test.tokens --executable executable.js
+node ./executable.js
 ```
 
 OR alternative:
