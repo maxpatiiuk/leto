@@ -75,7 +75,7 @@ export const parseGrammarDefinition = (rawDefinition: string): GrammarLine =>
           };
     });
 
-const reAction = /^#(?<number>\d+)\s*\{(?<definition>[^\n}]+|[\S\s]+^)\}$/gmu;
+const reAction = /^#(?<number>\d+)\s*\{(?<definition>[^\n]+|[\S\s]+?^)\}$/gmu;
 export const parseActions = (actions: string): GrammarActions =>
   Object.fromEntries(
     Array.from(actions.matchAll(reAction), ({ groups }) => [

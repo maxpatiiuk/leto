@@ -1,9 +1,15 @@
 import { program } from 'commander';
 import fs from 'node:fs';
 
-import { parse } from './parser.js';
+import type { PureGrammar } from './firstFollowSets/firstSets.js';
+import { getFirstSets, toPureGrammar } from './firstFollowSets/firstSets.js';
+import { getFollowSets } from './firstFollowSets/followSets.js';
+import { generateSourceCode } from './generator/index.js';
 import { parseGrammarFromFile } from './grammar/index.js';
-import type { Spec } from './grammar/types.js';
+import { parse } from './parse/index.js';
+import { buildParseTable } from './parseTable/build.js';
+import type { Token } from './tokenizer/index.js';
+import { tokenize } from './tokenizer/index.js';
 import type { RA } from './utils/types.js';
 
 program.name('dragonlex').description('Trial #2 - STD');
@@ -11,35 +17,43 @@ program.name('dragonlex').description('Trial #2 - STD');
 program
   .requiredOption('-t, --tokens <string>', 'path to token stream file')
   .requiredOption('-g, --grammar <string>', 'path to attribute grammar file')
+  .requiredOption(
+    '-e, --executable <string>',
+    'name of the executable to create'
+  );
 
 program.parse();
 
-const { tokens, grammar } = program.opts<{
+const { tokens, grammar, executable } = program.opts<{
   readonly tokens: string;
   readonly grammar: string;
+  readonly executable: string;
 }>();
 
 if (!fs.existsSync(tokens))
   throw new Error(`Tokens stream file does not exist: ${tokens}`);
-if (!fs.existsSync(grammar)) throw new Error(`Attribute grammar file does not exist: ${grammar}`);
+if (!fs.existsSync(grammar))
+  throw new Error(`Attribute grammar file does not exist: ${grammar}`);
 
 parseGrammarFromFile(grammar)
-  .then(async (specs) => parseInput(tokens, specs))
-  .then(printResults)
+  .then(async (spec) => {
+    const pureGrammar = toPureGrammar(spec.grammar);
+    const firstSets = getFirstSets(pureGrammar);
+    const followSets = getFollowSets(pureGrammar, firstSets);
+    const parseTable = buildParseTable(pureGrammar, firstSets, followSets);
+    const tokenStream = await tokenizeInput(tokens, pureGrammar);
+    const actions = parse(spec.grammar, parseTable, tokenStream);
+    const javaScript = generateSourceCode(spec, actions);
+    await fs.promises.writeFile(executable, javaScript);
+    return fs.promises.chmod(executable, '755');
+  })
   .catch(console.error);
 
-const parseInput = async (
+const tokenizeInput = async (
   input: string,
-  specs: RA<Spec>
-): Promise<ReturnType<typeof parse>> =>
-  parse(
-    specs,
-    await fs.promises.readFile(input).then((data) => data.toString())
+  grammar: PureGrammar
+): Promise<RA<Token>> =>
+  tokenize(
+    await fs.promises.readFile(input).then((data) => data.toString()),
+    grammar
   );
-
-function printResults(
-  { formattedErrors, output }: ReturnType<typeof parse>
-): void {
-  if (formattedErrors.length > 0) console.error(formattedErrors);
-  else console.log(output);
-}
