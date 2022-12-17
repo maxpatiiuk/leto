@@ -1,31 +1,23 @@
 {
-  "name": "dragonsdt",
+  "name": "leto",
   "version": "1.0.0",
-  "description": "Leger and Syntax-directed translator-generator",
+  "description": "Lexer and Syntax-directed translator-generator",
   "scripts": {
     "unitTest": "node --experimental-vm-modules node_modules/.bin/jest",
-    "testBuild": "ts-node-esm --input test.txt --output test.tokens --spec fixtures/Drewgon.spec --executable lexer",
+    "testBuild": "ts-node-esm --input test.txt --output test.tokens --spec fixtures/lexer.spec --executable lexer",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxxxxxdlp/tts-reader.git"
+    "url": "git+https://github.com/maxxxxxdlp/leto.git"
   },
-  "keywords": [
-    "tts",
-    "tts",
-    "reader",
-    "news",
-    "to",
-    "tts"
-  ],
   "type": "module",
   "author": "Max Patiiuk",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maxxxxxdlp/tts-reader/issues"
+    "url": "https://github.com/maxxxxxdlp/leto/issues"
   },
-  "homepage": "https://github.com/maxxxxxdlp/tts-reader#readme",
+  "homepage": "https://github.com/maxxxxxdlp/leto#readme",
   "dependencies": {
     "commander": "^9.4.0"
   },

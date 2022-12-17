@@ -1,4 +1,4 @@
-# dragonsdt
+# leto
 
 This is a two part project that allows to create a lexer and a parser
 (with syntax directed translation) for an arbitrary
@@ -22,9 +22,13 @@ npm install
 Scanner-Generator. Syntax is based on that of
 [Flex](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html).
 
+Example spec is provided in [`./fixtures/lexer.spec`](./fixtures/lexer.spec)
+
+// TODO: provide spec here
+
 ## Running Lexer
 
-To see available options, run the script with `--help` argument:
+To see available options, run the script with the `--help` argument:
 
 ```sh
 ./lexer --help
@@ -33,7 +37,7 @@ To see available options, run the script with `--help` argument:
 Example call:
 
 ```sh
-./lexer --spec fixtures/Drewgon.spec --input fixtures/test.txt --output fixtures/test.tokens
+./lexer --spec fixtures/leto.spec --input fixtures/in.leto --output fixtures/out.tokens
 ```
 
 ## Parser & Syntax-Directed Translator
@@ -44,7 +48,7 @@ Uses [LL(1)](https://en.wikipedia.org/wiki/LL_grammar) parser.
 
 ### Running Parser
 
-To see available options, run the script with `--help` argument:
+To see available options, run the script with the `--help` argument:
 
 ```sh
 ./parser --help
@@ -53,7 +57,8 @@ To see available options, run the script with `--help` argument:
 Example call:
 
 ```sh
-./parser --grammar fixtures/input.ag --tokens fixtures/test.tokens --executable fixtures/executable.js
+# fixtures/out.tokens is generated when running the lexer
+./parser --grammar fixtures/parser.spec --tokens fixtures/out.tokens --executable fixtures/executable.js
 node ./fixtures/executable.js
 ```
 
@@ -66,3 +71,7 @@ You can run it like this:
 ```sh
 npm test
 ```
+
+## Naming
+
+Project name comes from Leto Atreides II from the Dune science fiction series.

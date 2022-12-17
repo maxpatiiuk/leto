@@ -6,7 +6,7 @@ import { parseSpecFromFile } from '../spec/index.js';
 import type { Spec } from '../spec/types.js';
 import type { RA } from '../utils/types.js';
 
-program.name('dragonlex').description('Flex');
+program.name('lexer').description('Flex');
 
 program
   .requiredOption('-i, --input <string>', 'path to input file')
@@ -34,10 +34,7 @@ const tokenizeInput = async (
   input: string,
   specs: RA<Spec>
 ): Promise<ReturnType<typeof lex>> =>
-  lex(
-    specs,
-    await fs.promises.readFile(input).then((data) => data.toString())
-  );
+  lex(specs, await fs.promises.readFile(input).then((data) => data.toString()));
 
 async function printResults(
   outputPath: string,
