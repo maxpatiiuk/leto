@@ -1,10 +1,10 @@
 {
   "name": "dragonsdt",
   "version": "1.0.0",
-  "description": "Syntax-directed translator-generator",
+  "description": "Leger and Syntax-directed translator-generator",
   "scripts": {
     "unitTest": "node --experimental-vm-modules node_modules/.bin/jest",
-    "testBuild": "ts-node-esm --input test.txt --output test.tokens --spec Drewgon.spec --executable lexer",
+    "testBuild": "ts-node-esm --input test.txt --output test.tokens --spec fixtures/Drewgon.spec --executable lexer",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "repository": {

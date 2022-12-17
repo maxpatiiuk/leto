@@ -12,7 +12,12 @@ import type { Token } from './tokenizer/index.js';
 import { tokenize } from './tokenizer/index.js';
 import type { RA } from './utils/types.js';
 
-program.name('dragonlex').description('Trial #2 - STD');
+program.name('dragonlex').description('STD');
+
+// TODO: rename the language
+// TODO: update package.json meta
+// TODO: update README.md documentation (and extend it)
+// TODO: add link back to dgc project
 
 program
   .requiredOption('-t, --tokens <string>', 'path to token stream file')

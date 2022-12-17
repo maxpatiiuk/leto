@@ -1,6 +1,8 @@
 # dragonsdt
 
-Syntax-directed translator-generator written in TypeScript.
+This is a two part project that allows to create a lexer and a parser
+(with syntax directed translation) for an arbitrary
+[LL(1)](https://en.wikipedia.org/wiki/LL_grammar) programming language.
 
 ## Prerequisites
 
@@ -9,51 +11,50 @@ Syntax-directed translator-generator written in TypeScript.
 
 ## Installation
 
-Install dependencies: 
+Install dependencies:
 
 ```sh
-make build
+npm install
 ```
 
-## Running
+## Lexer
+
+Scanner-Generator. Syntax is based on that of
+[Flex](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html).
+
+## Running Lexer
 
 To see available options, run the script with `--help` argument:
 
 ```sh
-./dragonsdt --help
+./lexer --help
 ```
 
 Example call:
 
 ```sh
-./dragonsdt --grammar input.ag --executable translator
+./lexer --spec fixtures/Drewgon.spec --input fixtures/test.txt --output fixtures/test.tokens
 ```
 
-OR alternative:
+## Parser & Syntax-Directed Translator
 
-```sh
-make run
-```
+Syntax-directed translator-generator written in TypeScript.
 
-## Testing
+Uses [LL(1)](https://en.wikipedia.org/wiki/LL_grammar) parser.
+
+### Running Parser
 
 To see available options, run the script with `--help` argument:
 
-```
-./translator --help
+```sh
+./parser --help
 ```
 
 Example call:
 
 ```sh
-./translator --tokens test.tokens --executable executable.js
-node ./executable.js
-```
-
-OR alternative:
-
-```sh
-make test
+./parser --grammar fixtures/input.ag --tokens fixtures/test.tokens --executable fixtures/executable.js
+node ./fixtures/executable.js
 ```
 
 ## Unit Tests
