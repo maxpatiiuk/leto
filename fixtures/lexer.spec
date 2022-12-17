@@ -1,6 +1,9 @@
-      dog NOUN true
-      bites VERB false
-      m(a)+n NOUN false
-      \'\" QQ false
-      [ \n] (SKIP)
+      \d+ NUMBER true
+      \+ + false
+      - - false
+      \* * false
+      / / false
+      \( ( false
+      \) ) false
+      [\s\n] (SKIP)
       . (ERR) "bad input"

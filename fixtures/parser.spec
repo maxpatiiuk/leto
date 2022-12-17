@@ -6,7 +6,7 @@ B ::= B * C #3
 B ::= B / C #4
 B ::= C
 C ::= ( A )
-C ::= #5 num
+C ::= #5 NUMBER
 %%
 const stack = [];
 %%
