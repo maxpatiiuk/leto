@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxxxxxdlp/leto.git"
+    "url": "git+https://github.com/maxpatiiuk/leto.git"
   },
   "type": "module",
   "author": "Max Patiiuk",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maxxxxxdlp/leto/issues"
+    "url": "https://github.com/maxpatiiuk/leto/issues"
   },
-  "homepage": "https://github.com/maxxxxxdlp/leto#readme",
+  "homepage": "https://github.com/maxpatiiuk/leto#readme",
   "dependencies": {
     "commander": "^9.4.0"
   },
