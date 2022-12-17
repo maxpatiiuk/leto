@@ -14,7 +14,6 @@ import type { RA } from './utils/types.js';
 
 program.name('lexer').description('STD');
 
-// TODO: update README.md documentation (and extend it)
 // TODO: add link back to dgc project
 program
   .requiredOption('-t, --tokens <string>', 'path to token stream file')
