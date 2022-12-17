@@ -14,7 +14,6 @@ import type { RA } from './utils/types.js';
 
 program.name('lexer').description('STD');
 
-// TODO: add link back to dgc project
 program
   .requiredOption('-t, --tokens <string>', 'path to token stream file')
   .requiredOption('-g, --grammar <string>', 'path to attribute grammar file')

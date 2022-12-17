@@ -4,6 +4,9 @@ This is a two part project that allows to create a lexer and a parser
 (with syntax directed translation) for an arbitrary
 [LL(1)](https://en.wikipedia.org/wiki/LL_grammar) programming language.
 
+You might also be interested in [Alia](https://github.com/maxxxxxdlp/alia) -
+a compiler and interpreter for my programming language.
+
 ## Prerequisites
 
 - Node 18
@@ -111,6 +114,11 @@ Output:
 ```
 Calculation: 0.2
 ```
+
+## Compiler and Interpreter
+
+You might also be interested in [Alia](https://github.com/maxxxxxdlp/alia) -
+a compiler and interpreter for my programming language.
 
 ## Unit Tests
 
